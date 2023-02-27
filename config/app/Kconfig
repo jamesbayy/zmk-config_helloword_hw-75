@@ -1,0 +1,7 @@
+# Copyright (c) 2022-2023 XiNGRZ
+# SPDX-License-Identifier: MIT
+
+rsource "usb_comm/Kconfig"
+
+rsource "Kconfig.hid_mouse"
+rsource "Kconfig.indicator"
