@@ -8,8 +8,6 @@ compatible: "zmk,knob"
 properties:
   label:
     type: string
-    required: true
-
   motor:
     type: phandle
     required: true

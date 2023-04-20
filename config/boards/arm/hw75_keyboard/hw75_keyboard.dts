@@ -22,6 +22,10 @@
 		zmk,underglow = &led_strip;
 	};
 
+	aliases {
+		uart-comm = &slip;
+	};
+
 	default_transform: keymap_transform {
 		compatible = "zmk,matrix-transform";
 		rows = <11>;
@@ -39,7 +43,6 @@
 
 	led_strip: led-strip-remap {
 		compatible = "zmk,led-strip-remap";
-		label = "LED_STRIP";
 
 		chain-length = <101>;
 		led-strip = <&ws2812>;
@@ -65,7 +68,6 @@
 
 	slip: slip {
 		compatible = "zmk,uart-slip";
-		label = "SLIP";
 		uart = <&usart1>;
 	};
 };
@@ -87,6 +89,10 @@
 	ahb-prescaler = <1>;
 	apb1-prescaler = <2>;
 	apb2-prescaler = <1>;
+};
+
+&pinctrl {
+	swj-cfg = "jtag-disable";
 };
 
 &usb {
@@ -113,7 +119,6 @@
 		compatible = "zmk,kscan-gpio-74hc165";
 		reg = <0>;
 		spi-max-frequency = <1000000>;
-		label = "KSCAN";
 		chain-length = <11>;
 		scan-masks = [FF FF FF FF FF FF FF FF FF FF FF];
 		parallel-load-gpios = <&gpiob 4 GPIO_ACTIVE_LOW>;
@@ -127,7 +132,6 @@
 
 	ws2812: ws2812@0 {
 		compatible = "worldsemi,ws2812-spi";
-		label = "WS2812";
 
 		reg = <0>;
 		spi-max-frequency = <4000000>;

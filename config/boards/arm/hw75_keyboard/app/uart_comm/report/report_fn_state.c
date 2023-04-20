@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <kernel.h>
-#include <device.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
 
 #include <string.h>
 
@@ -13,11 +13,6 @@
 #include <zmk/events/layer_state_changed.h>
 
 #include "report.h"
-
-#define KEYMAP_NODE DT_INST(0, zmk_keymap)
-#define LAYER_LABEL(node) COND_CODE_0(DT_NODE_HAS_PROP(node, label), (NULL), (DT_LABEL(node))),
-
-static const char *layer_names[] = { DT_FOREACH_CHILD(KEYMAP_NODE, LAYER_LABEL) };
 
 static bool fn_pressed = false;
 
@@ -35,7 +30,7 @@ static int report_fn_state_event_listener(const zmk_event_t *eh)
 {
 	if (as_zmk_layer_state_changed(eh)) {
 		uint8_t index = zmk_keymap_highest_layer_active();
-		bool current = strncmp(layer_names[index], "FN", 2) == 0;
+		bool current = strncmp(zmk_keymap_layer_label(index), "FN", 2) == 0;
 		if (!fn_pressed && current) {
 			report_fn_state_changed(true);
 		} else if (fn_pressed && !current) {

@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <kernel.h>
-#include <device.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <storage/flash_map.h>
-#include <fs/nvs.h>
+#include <zephyr/storage/flash_map.h>
+#include <zephyr/fs/nvs.h>
+
+#define STORAGE_PARTITION FIXED_PARTITION_ID(storage_partition)
 
 static int storage_init(const struct device *dev)
 {
@@ -19,17 +21,15 @@ static int storage_init(const struct device *dev)
 	int ret;
 
 	const struct flash_area *fa;
-	ret = flash_area_open(FLASH_AREA_ID(storage), &fa);
+	ret = flash_area_open(STORAGE_PARTITION, &fa);
 	if (ret != 0) {
 		LOG_ERR("Failed to open storage flash area: %d", ret);
 		goto err_fa;
 	}
 
-	LOG_DBG("flash area name: %s", fa->fa_dev_name);
-
 	struct flash_sector sectors[8];
 	uint32_t sector_cnt = ARRAY_SIZE(sectors);
-	ret = flash_area_get_sectors(FLASH_AREA_ID(storage), &sector_cnt, sectors);
+	ret = flash_area_get_sectors(STORAGE_PARTITION, &sector_cnt, sectors);
 	if (ret != 0) {
 		LOG_ERR("Failed to get sector info of flash area: %d", ret);
 		goto err_nvs;
@@ -42,9 +42,10 @@ static int storage_init(const struct device *dev)
 		.offset = fa->fa_off,
 		.sector_size = sectors[0].fs_size,
 		.sector_count = sector_cnt,
+		.flash_device = fa->fa_dev,
 	};
 
-	ret = nvs_init(&nvs, fa->fa_dev_name);
+	ret = nvs_mount(&nvs);
 	if (ret == 0) {
 		LOG_DBG("NVS is ready to use");
 		goto err_nvs;

@@ -23,9 +23,14 @@
 		zmk,underglow = &led_strip;
 	};
 
+	aliases {
+		uart-comm = &slip;
+		eink = &eink;
+		knob = &knob;
+	};
+
 	oled: display-sw-rotate {
 		compatible = "zmk,display-sw-rotate";
-		label = "OLED_ROTATED";
 		width = <32>;
 		height = <128>;
 		display = <&ssd1306>;
@@ -33,7 +38,6 @@
 
 	eink: eink-sw-rotate {
 		compatible = "zmk,display-sw-rotate";
-		label = "EINK";
 		width = <128>;
 		height = <296>;
 		display = <&ssd16xx>;
@@ -42,7 +46,6 @@
 
 	kscan: kscan {
 		compatible = "zmk,kscan-gpio-direct";
-		label = "KSCAN";
 		input-gpios =
 			<&gpioc 8 GPIO_ACTIVE_LOW>,
 			<&gpioc 9 GPIO_ACTIVE_LOW>;
@@ -50,7 +53,6 @@
 
 	led_strip: led-strip-remap {
 		compatible = "zmk,led-strip-remap";
-		label = "LED_STRIP";
 
 		chain-length = <4>;
 		led-strip = <&ws2812>;
@@ -75,14 +77,12 @@
 
 	motor: motor {
 		compatible = "zmk,motor";
-		label = "MOTOR";
 		inverter = <&inverter>;
 		encoder = <&as5047>;
 	};
 
 	slip: slip {
 		compatible = "zmk,uart-slip";
-		label = "SLIP";
 		uart = <&usart2>;
 	};
 };
@@ -124,7 +124,6 @@
 
 	as5047: as5047@0 {
 		compatible = "ams,as5047";
-		label = "AS5047";
 
 		reg = <0>;
 		spi-max-frequency = <1000000>;
@@ -143,7 +142,6 @@
 
 	ssd16xx: ssd16xx@0 {
 		compatible = "solomon,ssd16xxfb";
-		label = "SSD16XX";
 
 		reg = <0>;
 		spi-max-frequency = <4000000>;
@@ -171,7 +169,6 @@
 
 	ws2812: ws2812@0 {
 		compatible = "worldsemi,ws2812-spi";
-		label = "WS2812";
 
 		reg = <0>;
 		spi-max-frequency = <4000000>;
@@ -192,7 +189,6 @@
 
 	ssd1306: ssd1306@3c {
 		compatible = "solomon,ssd1306fb";
-		label = "SSD1306";
 
 		reg = <0x3C>;
 
@@ -234,7 +230,6 @@
 
 	inverter: inverter {
 		compatible = "zmk,inverter-stm32";
-		label = "INVERTER";
 		enable-gpios = <&gpiob 8 GPIO_ACTIVE_HIGH>;
 		pwm-period = <4199>;
 		pwm-channels = <1 2 3>;
@@ -259,7 +254,7 @@
 
 		code_partition: partition@10000 {
 			label = "code_partition";
-			reg = <0x00010000 DT_SIZE_K(192)>;
+			reg = <0x00010000 DT_SIZE_K(320)>;
 		};
 	};
 };

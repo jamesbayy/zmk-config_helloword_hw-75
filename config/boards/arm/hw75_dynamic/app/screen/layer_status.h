@@ -6,6 +6,5 @@
 #pragma once
 
 #include <lvgl.h>
-#include <kernel.h>
 
-int layer_status_init(lv_obj_t *parent);
+int layer_status_init(lv_obj_t *parent, lv_group_t *group);
