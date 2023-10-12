@@ -73,6 +73,69 @@
 		compatible = "zmk,knob";
 		label = "KNOB";
 		motor = <&motor>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		profile_disable: disable@0 {
+			compatible = "zmk,knob-profile-disable";
+			reg = <0>;
+		};
+
+		profile_inertia: inertia@1 {
+			compatible = "zmk,knob-profile-inertia";
+			reg = <1>;
+			torque-limit-mv = <1500>;
+			velocity-pid = <300 0 0>;
+			angle-pid = <20000 0 700>;
+		};
+
+		profile_encoder: encoder@2 {
+			compatible = "zmk,knob-profile-encoder";
+			reg = <2>;
+			torque-limit-mv = <300>;
+			velocity-pid = <20 0 0>;
+			angle-pid = <100000 0 3500>;
+		};
+
+		profile_spring: spring@3 {
+			compatible = "zmk,knob-profile-spring";
+			reg = <3>;
+			torque-limit-mv = <1500>;
+			velocity-pid = <50 0 0>;
+			angle-pid = <100000 0 3500>;
+		};
+
+		profile_damped: damped@4 {
+			compatible = "zmk,knob-profile-damped";
+			reg = <4>;
+			torque-limit-mv = <1500>;
+			velocity-pid = <50 0 0>;
+			angle-pid = <100000 0 3500>;
+		};
+
+		profile_spin: spin@5 {
+			compatible = "zmk,knob-profile-spin";
+			reg = <5>;
+			torque-limit-mv = <1500>;
+			velocity-pid = <300 0 0>;
+		};
+
+		profile_ratchet: ratchet@6 {
+			compatible = "zmk,knob-profile-ratchet";
+			reg = <6>;
+			torque-limit-mv = <2500>;
+			velocity-pid = <50 0 0>;
+			angle-pid = <100000 0 3500>;
+		};
+
+		profile_switch: switch@7 {
+			compatible = "zmk,knob-profile-switch";
+			reg = <7>;
+			torque-limit-mv = <1500>;
+			velocity-pid = <50 0 0>;
+			angle-pid = <100000 0 3500>;
+		};
 	};
 
 	motor: motor {
@@ -141,7 +204,7 @@
 	cs-gpios = <&gpioa 4 GPIO_ACTIVE_LOW>;
 
 	ssd16xx: ssd16xx@0 {
-		compatible = "solomon,ssd16xxfb";
+		compatible = "solomon,ssd1675a";
 
 		reg = <0>;
 		spi-max-frequency = <4000000>;
@@ -153,12 +216,20 @@
 		dc-gpios = <&gpioc 0 GPIO_ACTIVE_LOW>;
 		busy-gpios = <&gpioc 1 GPIO_ACTIVE_HIGH>;
 
-		pp-width-bits = <8>;
-		pp-height-bits = <16>;
-		gdv = [16];
-		sdv = [0a];
-		vcom = <0xa8>;
-		border-waveform = <0x33>;
+		full {
+			/* VGH = 19V */
+			gdv = [15];
+
+			/* VSH1 = 15V, VSH2 = 5V, VSL = -15V */
+			sdv = [41 a8 32];
+
+			/* VDB = LUT3 */
+			border-waveform = <0x03>;
+
+			/* 128x296, 50Hz */
+			dummy-line = <0x30>;
+			gate-line-width = <0x0a>;
+		};
 	};
 };
 

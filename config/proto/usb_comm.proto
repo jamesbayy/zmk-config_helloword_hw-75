@@ -76,6 +76,8 @@ message Version
 		optional bool eink = 2;
 		optional bool knob = 3;
 		optional bool knob_prefs = 4;
+		optional bool knob_profile_switch = 7;
+		optional bool knob_spring_report = 8;
 	}
 }
 
@@ -110,6 +112,7 @@ message KnobConfig
 		DAMPED = 4;
 		SPIN = 5;
 		RATCHET = 6;
+		SWITCH = 7;
 	}
 
 	message Pref
@@ -176,4 +179,9 @@ message EinkImage
 {
 	required uint32 id = 1;
 	optional bytes bits = 3;
+	optional uint32 x = 4;
+	optional uint32 y = 5;
+	optional uint32 width = 6;
+	optional uint32 height = 7;
+	optional bool partial = 8;
 }

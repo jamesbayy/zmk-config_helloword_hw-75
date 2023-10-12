@@ -1,0 +1,17 @@
+compatible: "zmk,keymap-ext"
+
+include: "zmk,keymap.yaml"
+
+child-binding:
+  properties:
+    icon:
+      type: uint8-array
+      required: true
+
+    profile:
+      type: phandle
+
+    ppr:
+      type: int
+      required: false
+      default: 24

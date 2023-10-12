@@ -26,6 +26,13 @@ enum knob_mode {
 	KNOB_DAMPED,
 	KNOB_SPIN,
 	KNOB_RATCHET,
+	KNOB_SWITCH,
+};
+
+struct knob_params {
+	int ppr;
+	float position_min;
+	float position_max;
 };
 
 void knob_set_mode(const struct device *dev, enum knob_mode mode);
@@ -49,8 +56,6 @@ void knob_get_position_limit(const struct device *dev, float *min, float *max);
 float knob_get_position(const struct device *dev);
 
 float knob_get_velocity(const struct device *dev);
-
-int knob_get_encoder_position(const struct device *dev);
 
 #ifdef __cplusplus
 }
