@@ -28,9 +28,11 @@ jobs:
       - name: Set up build tools
         run: |
           apt-get update
-          apt-get install -y python3-pip protobuf-compiler curl
+          apt-get install -y python3-pip python3-venv protobuf-compiler curl
           curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
           apt-get install -y nodejs
+          python3 -m venv /tmp/venv
+          source /tmp/venv/bin/activate
           pip install -U fonttools
           npm install -g lv_font_conv
 
