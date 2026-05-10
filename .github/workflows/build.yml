@@ -32,7 +32,7 @@ jobs:
           curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
           apt-get install -y nodejs
           python3 -m venv /tmp/venv
-          source /tmp/venv/bin/activate
+          . /tmp/venv/bin/activate
           pip install -U fonttools
           npm install -g lv_font_conv
 
