@@ -52,7 +52,13 @@
 			bindings = <&lvkp LV_KEY_PREV &lvkp LV_KEY_NEXT>;
 			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 		};
-
+		arrow_horizontal {
+			label = "左右";
+			icon = [EF 86 9C];
+			bindings = <&trans &trans>;
+			// 将标准的左右改为带 Control 的左右
+			sensor-bindings = <&inc_dec_kp LG(RIGHT) LG(LEFT)>;
+		};
 		scroll {
 			label = "滚动";
 			icon = [EF 86 8A];
@@ -73,14 +79,6 @@
 			icon = [EF 86 93];
 			bindings = <&trans &trans>;
 			sensor-bindings = <&inc_dec_kp UP DOWN>;
-		};
-
-		arrow_horizontal {
-			label = "左右";
-			icon = [EF 86 9C];
-			bindings = <&trans &trans>;
-			// 将标准的左右改为带 Control 的左右
-			sensor-bindings = <&inc_dec_kp LC(RIGHT) LC(LEFT)>;
 		};
 	};
 };
