@@ -29,7 +29,7 @@ jobs:
           apt-get install -y python3-pip protobuf-compiler curl
           curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
           apt-get install -y nodejs
-          pip install -U fonttools
+          pip install --break-system-packages -U fonttools
           npm install -g lv_font_conv
       - name: Cache west modules
         uses: actions/cache@v4
@@ -51,7 +51,7 @@ jobs:
           west init -l config
           west update
           west zephyr-export
-          pip install -r zephyr/scripts/requirements.txt
+          pip install --break-system-packages -r zephyr/scripts/requirements.txt
           git config --global --add safe.directory $PWD
       - name: West build
         run: |
