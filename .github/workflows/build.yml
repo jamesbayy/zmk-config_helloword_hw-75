@@ -29,8 +29,11 @@ jobs:
           apt-get install -y python3-pip protobuf-compiler curl
           curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
           apt-get install -y nodejs
-          pip install --break-system-packages 'protobuf<4.0'  # Add this line
+          pip install --break-system-packages -U 'fonttools[varLib.instancer]>=4.0'
+          pip install --break-system-packages 'protobuf<4.0'
           npm install -g lv_font_conv
+          # Verify pyftsubset is available
+          which pyftsubset || pip show fonttools
       - name: Cache west modules
         uses: actions/cache@v4
         continue-on-error: true
