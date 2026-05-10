@@ -25,23 +25,23 @@
 		((float)DT_INST_PROP_BY_IDX(0, prop, 2) / 1000.0f)
 
 #define KNOB_PROFILE_HAS_VELOCITY_PID DT_INST_NODE_HAS_PROP(0, velocity_pid)
-#define KNOB_PROFILE_VELOCITY_PID Z_KNOB_PROFILE_PID(velocity_pid)
+#define KNOB_PROFILE_VELOCITY_PID     Z_KNOB_PROFILE_PID(velocity_pid)
 
 #define KNOB_PROFILE_HAS_ANGLE_PID DT_INST_NODE_HAS_PROP(0, angle_pid)
-#define KNOB_PROFILE_ANGLE_PID Z_KNOB_PROFILE_PID(angle_pid)
+#define KNOB_PROFILE_ANGLE_PID     Z_KNOB_PROFILE_PID(angle_pid)
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 struct knob_profile_api {
-	int (*enable)(const struct device *dev, struct motor_control *mc);
+	int (*enable)(const struct device *dev);
 	int (*update_params)(const struct device *dev, struct knob_params params);
 	int (*tick)(const struct device *dev, struct motor_control *mc);
 	int (*report)(const struct device *dev, int32_t *val);
 };
 
-static inline int knob_profile_enable(const struct device *dev, struct motor_control *mc)
+static inline int knob_profile_enable(const struct device *dev)
 {
 	const struct knob_profile_api *api = dev->api;
 
@@ -49,7 +49,7 @@ static inline int knob_profile_enable(const struct device *dev, struct motor_con
 		return -ENOTSUP;
 	}
 
-	return api->enable(dev, mc);
+	return api->enable(dev);
 }
 
 static inline int knob_profile_update_params(const struct device *dev, struct knob_params params)

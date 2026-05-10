@@ -36,6 +36,9 @@ struct knob_data {
 
 	struct knob_params params;
 
+	float position_min;
+	float position_max;
+
 	bool encoder_report;
 	int encoder_ppr;
 };
@@ -102,7 +105,7 @@ void knob_set_mode(const struct device *dev, enum knob_mode mode)
 
 	if (data->profile != NULL) {
 		knob_profile_update_params(data->profile, data->params);
-		knob_profile_enable(data->profile, data->mc);
+		knob_profile_enable(data->profile);
 	}
 }
 
@@ -153,20 +156,15 @@ int knob_get_encoder_ppr(const struct device *dev)
 void knob_set_position_limit(const struct device *dev, float min, float max)
 {
 	struct knob_data *data = dev->data;
-
-	data->params.position_min = min;
-	data->params.position_max = max;
-
-	if (data->profile != NULL) {
-		knob_profile_update_params(data->profile, data->params);
-	}
+	data->position_min = min;
+	data->position_max = max;
 }
 
 void knob_get_position_limit(const struct device *dev, float *min, float *max)
 {
 	struct knob_data *data = dev->data;
-	*min = data->params.position_min;
-	*max = data->params.position_max;
+	*min = data->position_min;
+	*max = data->position_max;
 }
 
 float knob_get_position(const struct device *dev)
@@ -200,13 +198,31 @@ static void knob_thread(void *p1, void *p2, void *p3)
 	struct knob_data *data = dev->data;
 	const struct knob_config *config = dev->config;
 
+	float p;
+	bool limited = false;
+
 	while (1) {
 		if (data->profile != NULL) {
-			knob_profile_tick(data->profile, data->mc);
+			limited = false;
+			if (data->position_min != data->position_max) {
+				p = knob_get_position(dev);
+				if (p > data->position_max) {
+					data->mc->mode = ANGLE;
+					data->mc->target = data->position_max;
+					limited = true;
+				} else if (p < data->position_min) {
+					data->mc->mode = ANGLE;
+					data->mc->target = data->position_min;
+					limited = true;
+				}
+			}
+			if (!limited) {
+				knob_profile_tick(data->profile, data->mc);
+			}
+
 			motor_tick(config->motor);
 
 			data->delta = 0;
-
 			if (data->encoder_report &&
 			    knob_profile_report(data->profile, &data->delta) == 0 &&
 			    data->delta != 0) {
@@ -237,8 +253,6 @@ int knob_init(const struct device *dev)
 	data->mc = motor_get_control(config->motor);
 
 	data->params.ppr = data->encoder_ppr;
-	data->params.position_min = deg_to_rad(110);
-	data->params.position_max = deg_to_rad(250);
 
 	k_thread_create(&data->thread, data->thread_stack, CONFIG_KNOB_THREAD_STACK_SIZE,
 			(k_thread_entry_t)knob_thread, (void *)dev, 0, NULL,
@@ -254,6 +268,8 @@ int knob_init(const struct device *dev)
 #define KNOB_INST(n)                                                                               \
 	static struct knob_data knob_data_##n = {                                                  \
 		.mode = KNOB_DISABLE,                                                              \
+		.position_min = 0,                                                                 \
+		.position_max = 0,                                                                 \
 		.encoder_report = false,                                                           \
 		.encoder_ppr = DT_INST_PROP(n, ppr),                                               \
 	};                                                                                         \
