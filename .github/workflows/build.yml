@@ -54,14 +54,16 @@ jobs:
 
       - name: Prepare west
         run: |
-          west init -l config
-          west update
-          west zephyr-export
-          pip install -r zephyr/scripts/requirements.txt
-          git config --global --add safe.directory $PWD
+            . /tmp/venv/bin/activate
+            west init -l config
+            west update
+            west zephyr-export
+            pip install -r zephyr/scripts/requirements.txt
+            git config --global --add safe.directory $PWD
 
       - name: West build
         run: |
+          . /tmp/venv/bin/activate
           west build -s zmk/app -b ${{ matrix.board }} -- \
             -DZMK_CONFIG=${GITHUB_WORKSPACE}/config \
             -DKEYMAP_FILE=${GITHUB_WORKSPACE}/config/${{ matrix.keymap }}
